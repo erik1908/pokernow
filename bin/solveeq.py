@@ -5,8 +5,14 @@ import splunk.Intersplunk
 
 import operator
 
-def solveeq(text):
-    players = {}
+def solveeq():
+    # get the keywords and options passed to this command
+    players, options = splunk.Intersplunk.getKeywordsAndOptions()
+
+    # get the previous search results
+    results,dummyresults,settings = splunk.Intersplunk.getOrganizedResults()
+
+    players = {results}
     winners = {}
     losers = {}
     neutral = {}
@@ -42,10 +48,7 @@ def solveeq(text):
     for k_winner, loser in final.items():
         return(k_winner, loser)
 
-# get the previous search results
-results,unused1,unused2 = splunk.Intersplunk.getOrganizedResults()
-# for each results, add a 'shape' attribute, calculated from the raw event text
-for result in results:
-    result[loser] = solveeq(result["_raw"])
-# output results
-splunk.Intersplunk.outputResults(results)
+
+ 
+if __name__ == '__main__':
+    execute()
