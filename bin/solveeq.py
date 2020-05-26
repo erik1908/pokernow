@@ -46,6 +46,6 @@ def solveeq(text):
 results,unused1,unused2 = splunk.Intersplunk.getOrganizedResults()
 # for each results, add a 'shape' attribute, calculated from the raw event text
 for result in results:
-    result["shape"] = solveeq(result["_raw"])
+    result["loser"] = solveeq(result["_raw"])
 # output results
 splunk.Intersplunk.outputResults(results)
