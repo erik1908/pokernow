@@ -1,7 +1,7 @@
 import operator
 
 #players = {'Castor':-10, 'Daan':22.58, 'Jardinero':101.24, 'Jeroen Do':-10, 'Jeroen':-60.83, 'MFJ':0.96, 'Rogier':-10, 'Wanders':-33.95}
-players = {'Jardinero':6.52, 'Jeroen':21.33, 'Patrick':-7.85, 'Rogier':-20}
+players = {'Jeroen':34.9, 'Castor':6.17, 'Ikke':-6.06, 'Jardinero':-15.01, 'Rogier':-20}
 winners = {}
 losers = {}
 neutral = {}

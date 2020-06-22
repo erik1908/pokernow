@@ -5,7 +5,7 @@ import os
 import operator
 
 #players = {'Castor':-10, 'Daan':22.58, 'Jardinero':101.24, 'Jeroen Do':-10, 'Jeroen':-60.83, 'MFJ':0.96, 'Rogier':-10, 'Wanders':-33.95}
-#players = {'Castor':-11.75, 'Jardinero':6.61, 'Jeroen':-2.43, 'Makkie':-5.58, 'Odi':1, 'PATRICK':-22.45, 'Rogier':25.78, 'Ruben':8.82}
+players = {'Rogier':20.23, 'Castor':8.16, 'Jardinero':4.03, 'Odi':-3.74, 'Daan':-8.68, 'Patrick':-20}
 winners = {}
 losers = {}
 neutral = {}
@@ -30,10 +30,6 @@ class solvesplitter(ReportingCommand):
 
     """
     @Configuration()
-    def map(self, events):
-        # Put your streaming preop implementation here, or remove the map method,
-        # if you have no need for a streaming preop
-        pass
 
     def reduce(self, events):
         players = events
