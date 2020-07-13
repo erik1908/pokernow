@@ -31,7 +31,7 @@ class solvesplitter(ReportingCommand):
     %(description)
 
     """
-    @Configuration()
+
 
     def reduce(self, events):
         
