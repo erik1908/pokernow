@@ -3,13 +3,15 @@
 import sys
 import os
 import operator
+import operator
 
-#players = {'Castor':-10, 'Daan':22.58, 'Jardinero':101.24, 'Jeroen Do':-10, 'Jeroen':-60.83, 'MFJ':0.96, 'Rogier':-10, 'Wanders':-33.95}
-players = {'Rogier':20.23, 'Castor':8.16, 'Jardinero':4.03, 'Odi':-3.74, 'Daan':-8.68, 'Patrick':-20}
+players = {'patrick':73.54, 'Jardinero':61.97, 'Jeroen':0.17, 'Daan':-15.68, 'Castor':-20, 'Roger':-20, 'JONES':-80}
+
 winners = {}
 losers = {}
 neutral = {}
 final = {}
+
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "lib"))
 from splunklib.searchcommands import \
@@ -32,14 +34,14 @@ class solvesplitter(ReportingCommand):
     @Configuration()
 
     def reduce(self, events):
-        players = events
-        for k, v in players.items():
-          if v > 0:
-               winners[k] = v
-          elif v == 0:
-               neutral[k] = v
-          else:
-               losers[k] = v
+        
+          for k, v in players.items():
+               if v > 0:
+                    winners[k] = v
+               elif v == 0:
+                    neutral[k] = v
+               else:
+                    losers[k] = v
 
           x = 0
 
@@ -65,8 +67,6 @@ class solvesplitter(ReportingCommand):
                          continue
 
           for k_winner, loser in final.items():
-               yield(k_winner, loser)        # Put your reporting implementation
-
-          pass
+               print(loser)
 
 dispatch(solvesplitter, sys.argv, sys.stdin, sys.stdout, __name__)
