@@ -5,12 +5,6 @@ import os
 import operator
 import operator
 
-players = {'patrick':73.54, 'Jardinero':61.97, 'Jeroen':0.17, 'Daan':-15.68, 'Castor':-20, 'Roger':-20, 'JONES':-80}
-
-winners = {}
-losers = {}
-neutral = {}
-final = {}
 
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "lib"))
@@ -19,7 +13,7 @@ from splunklib.searchcommands import \
 
 
 @Configuration()
-class solvesplitter(ReportingCommand):
+class SolveSplitterCommand(ReportingCommand):
     """ %(synopsis)
 
     ##Syntax
@@ -33,7 +27,19 @@ class solvesplitter(ReportingCommand):
     """
 
     @Configuration()
+    def map(self, events):
+        for event in events:
+            yield event
+
     def reduce(self, events):
+          players = {}
+          for event in events:
+              players[event['player']] = float(event['total'])
+
+	  winners = {}
+	  losers = {}
+	  neutral = {}
+	  final = {}
         
           for k, v in players.items():
                if v > 0:
@@ -67,6 +73,11 @@ class solvesplitter(ReportingCommand):
                          continue
 
           for k_winner, loser in final.items():
-               print(loser)
+               result = {}
+               for k in loser.keys():
+                   result['winner'] = k
+                   result['loser'] = loser[k][0]
+                   result['pays'] = loser[k][1] 
+               yield result
 
-dispatch(solvesplitter, sys.argv, sys.stdin, sys.stdout, __name__)
+dispatch(SolveSplitterCommand, sys.argv, sys.stdin, sys.stdout, __name__)
