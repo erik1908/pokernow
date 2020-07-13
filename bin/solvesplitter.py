@@ -32,7 +32,7 @@ class solvesplitter(ReportingCommand):
 
     """
 
-
+    @Configuration()
     def reduce(self, events):
         
           for k, v in players.items():
