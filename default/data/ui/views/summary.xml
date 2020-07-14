@@ -17,7 +17,7 @@
       <title>Results</title>
       <table>
         <search>
-          <query>host="data-ninja.com" index="main" sourcetype="poker:summary" earliest=-4d source=$selectedSession$ 
+          <query>host="data-ninja.com" index="main" sourcetype="poker:summary" source=$selectedSession$ 
 | eval amount=coalesce(stack,addon), action=if(action="created","participation",action) 
 | chart sum(amount) over player by action 
 | table player quits addon participation 
@@ -27,8 +27,8 @@
 
 | table player total
 | sort - total</query>
-          <earliest>-24h@h</earliest>
-          <latest>now</latest>
+          <earliest>0</earliest>
+          <latest></latest>
         </search>
         <option name="drilldown">none</option>
         <option name="refresh.display">progressbar</option>
@@ -38,27 +38,23 @@
       <title>Tikkies</title>
       <table>
         <search>
-          <query>| makeresults | eval text="0 {'Jardinero': ['Castor', 6.61]}
-1 {'Odi': ['Castor', 1]}
-2 {'Rogier': ['Castor', 4.14]}
-3 {'Rogier': ['Jeroen', 2.43]}
-4 {'Rogier': ['Makkie', 5.58]}
-5 {'Rogier': ['PATRICK', 13.63]}
-6 {'Ruben': ['PATRICK', 8.82]}"
-| rex max_match=100 field=text "\d\s\{\'(?&lt;winner&gt;[^\']+)\'\:\s\[\'(?&lt;loser&gt;[^\']+)\'\,\s(?&lt;amount&gt;[^\]]+)\]\}"
-| fields - _time text
-| eval n=mvzip(mvzip(winner,loser,"|"),amount,"|")
-| fields n
-| mvexpand n
-| eval n=split(n, "|")
-| eval winner=mvindex(n,0), loser=mvindex(n,1), amount=mvindex(n,2)
-| fields - n
-| eval tikkies = winner . " mag een tikkie van: " . amount . " sturen naar: " . loser
-| fields tikkies</query>
-          <earliest>-24h@h</earliest>
+          <query>host="data-ninja.com" index="main" sourcetype="poker:summary" source=$selectedSession$ 
+| eval amount=coalesce(stack,addon), action=if(action="created","participation",action) 
+| chart sum(amount) over player by action 
+| table player quits addon participation 
+| eval addon=if(isnull(addon),"0",addon) 
+| fillnull value="0" 
+| eval total=(quits-addon-participation)/100 
+| table player total 
+| sort - total 
+| solvesplitter 
+| eval tekst=printf("%s mag een tikkie van %s sturen aan %s", winner, pays, loser)
+| table tekst loser pays winner</query>
+          <earliest>-30d@d</earliest>
           <latest>now</latest>
         </search>
         <option name="drilldown">none</option>
+        <option name="refresh.display">progressbar</option>
       </table>
     </panel>
   </row>
@@ -67,7 +63,7 @@
       <title>Summary</title>
       <table>
         <search>
-          <query>host="data-ninja.com" index="main" sourcetype="poker:summary" earliest=-4d source=$selectedSession$
+          <query>host="data-ninja.com" index="main" sourcetype="poker:summary" earliest=-88d source=$selectedSession$
 | eval amount=coalesce(stack,addon), action=if(action="created","participation",action) 
 | chart sum(amount) over player by action 
 | table player quits addon participation 
@@ -82,8 +78,43 @@
 | stats values(*) as * by player
 | table player total out *
 | sort - total</query>
-          <earliest>-7d@h</earliest>
-          <latest>now</latest>
+          <earliest>0</earliest>
+          <latest></latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="refresh.display">progressbar</option>
+        <option name="rowNumbers">false</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <table>
+        <search>
+          <query>host="data-ninja.com" index="main" sourcetype="poker:summary" source=$selectedSession$ 
+| eval amount=coalesce(stack,addon), action=if(action="created","participation",action) 
+| chart sum(amount) over player by action 
+| table player quits addon participation
+| eval addon=if(isnull(addon),"0",addon) 
+| fillnull value="0" 
+| eval total=(quits-addon-participation)/100 
+| table player total
+| sort - total
+| streamstats c
+| eval v = c . "'" . player . "':" . total . ","
+| stats values(v) as v 
+| nomv v
+| rex mode=sed field=v "s/(\d)\'/'/g"
+| rex mode=sed field=v "s/\,$//g"
+| eval v= "players = {" . v . "}"</query>
+          <earliest>0</earliest>
+          <latest></latest>
           <sampleRatio>1</sampleRatio>
         </search>
         <option name="count">20</option>
