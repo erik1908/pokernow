@@ -55,7 +55,7 @@ class SolveSplitterCommand(ReportingCommand):
                for k_loser, v_loser in losers.items():
                     if (v_winner==0) or (v_loser==0):
                          continue
-                    elif (abs(v_loser)<v_winner):
+                    elif (abs(v_loser)<=v_winner):
                          final[x] = {k_winner:[k_loser,round(abs(v_loser),2)]}
                          v_winner = v_winner - abs(v_loser)
                          losers[k_loser] = 0
